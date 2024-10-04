@@ -1,0 +1,42 @@
+{
+  "name": "@point-of-sale/keyboard-barcode-scanner",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+      "browser": {
+          "import": "./dist/keyboard-barcode-scanner.esm.js",
+          "require": "./dist/keyboard-barcode-scanner.umd.js",
+          "script": "./dist/keyboard-barcode-scanner.umd.js"
+      }
+  },
+  "module": "src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NielsLeenheer/KeyboardBarcodeScanner.git"
+  },
+  "keywords": [
+    "hid",
+    "keyboard",
+    "barcode",
+    "scanner"
+  ],
+  "author": "Niels Leenheer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NielsLeenheer/KeyboardBarcodeScanner/issues"
+  },
+  "homepage": "https://github.com/NielsLeenheer/KeyboardBarcodeScanner#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.1.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
+    "@rollup/plugin-terser": "^0.4.1",
+    "rollup": "^3.20.7"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "files": [
+    "dist"
+  ]
+}
