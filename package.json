@@ -1,6 +1,6 @@
 {
   "name": "@point-of-sale/keyboard-barcode-scanner",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "type": "module",
   "exports": {
     "browser": {
@@ -41,6 +41,6 @@
     "dist"
   ],
   "dependencies": {
-    "@point-of-sale/barcode-parser": "^1.0.1"
+    "@point-of-sale/barcode-parser": "^1.0.2"
   }
 }
