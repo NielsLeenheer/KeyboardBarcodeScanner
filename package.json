@@ -34,7 +34,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "link": "npm link @point-of-sale/barcode-parser"
   },
   "files": [
     "dist"
