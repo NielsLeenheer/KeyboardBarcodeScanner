@@ -32,6 +32,7 @@ class KeyboardBarcodeScanner {
 
 	constructor(options) {
         this.#options = Object.assign({
+            debug: false,
             timing: 'auto',
             guessSymbology: false,
             allowedSymbologies: [],
@@ -101,7 +102,9 @@ class KeyboardBarcodeScanner {
             e.preventDefault();    
         }
 
-        console.log(e);
+        if (this.#options.debug) {
+           console.log(e);
+        }
 
         /* Set the starting timestamp for this - perhaps series of - keydown events */
 
@@ -113,7 +116,10 @@ class KeyboardBarcodeScanner {
 
         if (this.#internal.keystrokes > 1 && this.#internal.state === 'unknown') {
             if (now - this.#internal.timestamp.last > this.#timeBetweenKeystrokes) {
-                console.log(`forcing parse because ${this.#timeBetweenKeystrokes}ms since last keydown`, now, this.#internal.timestamp.last, now - this.#internal.timestamp.last);
+                if (this.#options.debug) {
+                    console.log(`forcing parse because ${this.#timeBetweenKeystrokes}ms since last keydown`, now, this.#internal.timestamp.last, now - this.#internal.timestamp.last);
+                }
+
                 this.#parse(this.#internal.buffer);
                 this.#reset();
             }
@@ -188,7 +194,10 @@ class KeyboardBarcodeScanner {
         }
 
         if (now - this.#internal.timestamp.last > this.#timeoutAfterLastKeystroke) {
-            console.log(`forcing parse because ${this.#timeoutAfterLastKeystroke}ms have passed`, now, this.#internal.timestamp.last, now - this.#internal.timestamp.last);
+            if (this.#options.debug) {
+                console.log(`forcing parse because ${this.#timeoutAfterLastKeystroke}ms have passed`, now, this.#internal.timestamp.last, now - this.#internal.timestamp.last);
+            }
+
             this.#parse(this.#internal.buffer);
             this.#reset();
         }
@@ -211,11 +220,12 @@ class KeyboardBarcodeScanner {
 
     #parse(buffer) {
         if (buffer.length > 4) {
-            
-            console.log(
-                `received ${this.#internal.keystrokes} keystrokes in ${parseInt(this.#internal.timestamp.last - this.#internal.timestamp.first, 10)}ms, ` + 
-                `that is an average of ${parseInt((this.#internal.timestamp.last - this.#internal.timestamp.first) / this.#internal.keystrokes, 10)}ms per keystroke`
-            );
+            if (this.#options.debug) {
+                console.log(
+                    `received ${this.#internal.keystrokes} keystrokes in ${parseInt(this.#internal.timestamp.last - this.#internal.timestamp.first, 10)}ms, ` + 
+                    `that is an average of ${parseInt((this.#internal.timestamp.last - this.#internal.timestamp.first) / this.#internal.keystrokes, 10)}ms per keystroke`
+                );
+            }
 
             let result = {
                 value: String.fromCharCode.apply(null, buffer),
@@ -253,11 +263,19 @@ class KeyboardBarcodeScanner {
                 }
             }
 
+            if (this.#options.debug) {
+                console.log('Result', result);
+            }
+
             /* Decode GS1 data */
 
             let parsed = GS1.parse(result);
             if (parsed) {
                 result.data = parsed;
+            }
+
+            if (this.#options.debug) {
+                console.log('GS1', result);
             }
 
             /* Emit the barcode event */
