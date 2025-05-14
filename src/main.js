@@ -43,9 +43,11 @@ class KeyboardBarcodeScanner {
             command:        [],
             keydown:        this.#keydown.bind(this),
             interval:       null,
+            timeout:        null,
             emitter:        new EventEmitter(),
             buffer:         [],
             keystrokes:     0,
+            events:         [],
             timestamp:      {
                 first:      null,
                 last:       null
@@ -120,6 +122,12 @@ class KeyboardBarcodeScanner {
                     console.log(`forcing parse because ${this.#timeBetweenKeystrokes}ms since last keydown`, now, this.#internal.timestamp.last, now - this.#internal.timestamp.last);
                 }
 
+                this.#internal.events.push({
+                    type: 'label',
+                    label: 'Slowdown',
+                    time: performance.now()
+                });
+
                 this.#parse(this.#internal.buffer);
                 this.#reset();
             }
@@ -132,6 +140,15 @@ class KeyboardBarcodeScanner {
                 this.#internal.state = 'data';
             }
         }
+
+        this.#internal.events.push({
+            type: 'keydown',
+            time: now,
+            key: e.key,
+            code: e.code,
+            state: this.#internal.state
+        });
+
 
         /* Intercept commands */
 
@@ -184,6 +201,19 @@ class KeyboardBarcodeScanner {
 
         this.#internal.keystrokes++;
         this.#internal.timestamp.last = now;
+
+
+        if (this.#internal.timeout) {
+            clearTimeout(this.#internal.timeout);
+        }
+
+        this.#internal.timeout = setTimeout(() => {
+            this.#internal.emitter.emit('debug', {
+                events: this.#internal.events
+            });
+
+            this.#internal.events = [];
+        }, 500)
     }
 
     #check() {
@@ -197,6 +227,12 @@ class KeyboardBarcodeScanner {
             if (this.#options.debug) {
                 console.log(`forcing parse because ${this.#timeoutAfterLastKeystroke}ms have passed`, now, this.#internal.timestamp.last, now - this.#internal.timestamp.last);
             }
+
+            this.#internal.events.push({
+                type: 'label',
+                label: 'Timeout',
+                time: performance.now()
+            });
 
             this.#parse(this.#internal.buffer);
             this.#reset();
@@ -219,6 +255,16 @@ class KeyboardBarcodeScanner {
     }
 
     #parse(buffer) {
+        let now = performance.now();
+
+        this.#internal.events.push({
+            type: 'label',
+            label: buffer.length > 4 ? 'Parsing' : 'Rejecting',
+            class: buffer.length > 4 ? 'success' : 'error',
+            time: now,
+            buffer
+        });
+        
         if (buffer.length > 4) {
             if (this.#options.debug) {
                 console.log(
