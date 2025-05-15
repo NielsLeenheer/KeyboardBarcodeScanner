@@ -177,8 +177,15 @@ class KeyboardBarcodeScanner {
 
             /* Just a regular keypress */
 
-            if (e.key.length === 1) {
+            if (e.key.length === 1 && !e.ctrlKey) {
                 this.#internal.buffer.push(e.key.charCodeAt(0));
+            }
+
+            /* Handle Ctrl + X key modifiers */
+
+            else if (e.key.length === 1 && e.ctrlKey) {
+                let value = e.key.toUpperCase().charCodeAt(0) - 0x40;                
+                this.#internal.buffer.push(value);
             }
 
             /* Special keys */
