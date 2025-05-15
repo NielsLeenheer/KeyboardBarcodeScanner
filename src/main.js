@@ -287,9 +287,9 @@ class KeyboardBarcodeScanner {
                 ]
             };
 
-            /* If the last character of value is a carriage return, remove it */
+            /* If the last character of value is a carriage return, linefeed or tab, remove it */
 
-            if (result.value.endsWith('\r')) {
+            while (result.value.endsWith('\n') || result.value.endsWith('\r') || result.value.endsWith('\t')) {
                 result.value = result.value.slice(0, -1);
             }
 
