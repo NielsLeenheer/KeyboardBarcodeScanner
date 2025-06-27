@@ -41,6 +41,6 @@
     "dist"
   ],
   "dependencies": {
-    "@point-of-sale/barcode-parser": "^1.0.3"
+    "@point-of-sale/barcode-parser": "^1.0.4"
   }
 }
