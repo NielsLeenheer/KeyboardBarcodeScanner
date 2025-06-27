@@ -128,7 +128,12 @@ class KeyboardBarcodeScanner {
                     time: performance.now()
                 });
 
-                this.#parse(this.#internal.buffer);
+                try {
+                    this.#parse(this.#internal.buffer);
+                } catch (e) {
+                    console.error(e);
+                }
+
                 this.#reset();
             }
         }
@@ -241,7 +246,12 @@ class KeyboardBarcodeScanner {
                 time: performance.now()
             });
 
-            this.#parse(this.#internal.buffer);
+            try {
+                this.#parse(this.#internal.buffer);
+            } catch (e) {
+                console.error(e);
+            }
+
             this.#reset();
         }
     }
